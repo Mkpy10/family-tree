@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Tree</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .document-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #4a90e2;
+            padding-bottom: 20px;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .generation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            position: relative;
+        }
+        
+        .person-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            min-width: 140px;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .person-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            border: 3px solid rgba(255,255,255,0.3);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        .male-avatar {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSI4IiByPSIzIiBmaWxsPSIjNjY2NmZmIi8+CjxwYXRoIGQ9Ik0xMiAxNGMtNC40MTgzIDAtOCAyLjY4NjMtOCA2djJoMTZ2LTJjMC0zLjMxMzctMy41ODE3LTYtOC02eiIgZmlsbD0iIzY2NjZmZiIvPgo8L3N2Zz4=');
+            background-color: #4a90e2;
+        }
+        
+        .female-avatar {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSI4IiByPSIzIiBmaWxsPSIjZmY2NmI4Ii8+CjxwYXRoIGQ9Ik0xMiAxNGMtNC40MTgzIDAtOCAyLjY4NjMtOCA2djJoMTZ2LTJjMC0zLjMxMzctMy41ODE3LTYtOC02eiIgZmlsbD0iI2ZmNjZiOCIvPgo8L3N2Zz4=');
+            background-color: #e91e63;
+        }
+        
+        .pet-avatar {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuNSAxM0gxOC41QzE4Ljc3NjEgMTMgMTkgMTMuMjIzOSAxOSAxMy41VjE0LjVDMTkgMTUuODgwNyAxNy44ODA3IDE3IDE2LjUgMTdIMTQuNUwxMyAxOUwxMS41IDE3SDcuNUM2LjExOTI5IDE3IDUgMTUuODgwNyA1IDE0LjVWMTMuNUM1IDEzLjIyMzkgNC43NzYxNCAxMyA0LjUgMTNaIiBmaWxsPSIjZmY5ODAwIi8+CjxjaXJjbGUgY3g9IjciIGN5PSI5IiByPSIxLjUiIGZpbGw9IiNmZjk4MDAiLz4KPGNpcmNsZSBjeD0iMTciIGN5PSI5IiByPSIxLjUiIGZpbGw9IiNmZjk4MDAiLz4KPGVsbGlwc2UgY3g9IjEyIiBjeT0iNyIgcng9IjMiIHJ5PSIyIiBmaWxsPSIjZmY5ODAwIi8+Cjwvc3ZnPg==');
+            background-color: #ff9800;
+            border-color: #e67e22;
+        }
+        
+        .person-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .person-box input {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 5px;
+            border-radius: 5px;
+            width: 100%;
+            margin-bottom: 5px;
+        }
+        
+        .person-box input::placeholder {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .person-box .role {
+            font-size: 12px;
+            opacity: 0.9;
+            font-style: italic;
+        }
+        
+        .grandparents .person-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .parents .person-box {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .aunts-uncles .person-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #2c3e50;
+        }
+        
+        .aunts-uncles .person-box input {
+            background: rgba(44, 62, 80, 0.1);
+            color: #2c3e50;
+        }
+        
+        .aunts-uncles .person-box input::placeholder {
+            color: rgba(44, 62, 80, 0.6);
+        }
+        
+        .children .person-box {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: #2c3e50;
+        }
+        
+        .children .person-box input {
+            background: rgba(44, 62, 80, 0.1);
+            color: #2c3e50;
+        }
+        
+        .children .person-box input::placeholder {
+            color: rgba(44, 62, 80, 0.6);
+        }
+        
+        .pet {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%) !important;
+            border: 3px dashed #e67e22;
+        }
+        
+        .generation-label {
+            background: #34495e;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .side-label {
+            font-size: 12px;
+            color: #7f8c8d;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+        
+        .mom-side {
+            border-left: 4px solid #e74c3c;
+            padding-left: 15px;
+        }
+        
+        .dad-side {
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        
+        .instructions {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .instructions h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        
+        .instructions p {
+            color: #7f8c8d;
+            line-height: 1.6;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            .instructions {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="document-container">
+        <div class="header">
+            <h1>🌳 Mon arbre généalogique 🌳</h1>
+        </div>
+        
+        <div class="tree-container">
+            <!-- Grandparents Generation -->
+            <div class="generation grandparents">
+                <div class="generation-label">Mes grandparents</div>
+            </div>
+            
+            <div class="generation grandparents">
+                <div class="person-box">
+                    <div class="person-avatar" style="background-image: url('maternal-grandfather.png');"></div>
+                    <input type="text" placeholder="Maternal Grandfather">
+                    <div class="role">Mon grandpère maternel</div>
+                </div>
+                <div class="person-box">
+                    <div class="person-avatar" style="background-image: url('maternal-grandmother.png');"></div>
+                    <input type="text" placeholder="Maternal Grandmother">
+                    <div class="role">Ma grandmère maternelle</div>
+                </div>
+                <div class="person-box">
+                    <div class="person-avatar" style="background-image: url('paternal-grandfather.png');"></div>
+                    <input type="text" placeholder="Paternal Grandfather">
+                    <div class="role">Mon grandpère paternel</div>
+                </div>
+                <div class="person-box">
+                    <div class="person-avatar" style="background-image: url('paternal-grandmother.png');"></div>
+                    <input type="text" placeholder="Paternal Grandmother">
+                    <div class="role">Ma grandmère paternelle</div>
+                </div>
+            </div>
+            
+            <!-- Parents Generation -->
+            <div class="generation parents">
+                <div class="generation-label">Mes parents</div>
+            </div>
+            
+            <div class="generation parents">
+                <div class="person-box">
+                    <div class="person-avatar" style="background-image: url('mother.jpg');"></div>
+                    <input type="text" placeholder="Mom's Name">
+                    <div class="role">Ma mère</div>
+                </div>
+                <div class="person-box">
+                    <div class="person-avatar" style="background-image: url('father.webp');"></div>
+                    <input type="text" placeholder="Dad's Name">
+                    <div class="role">Mon père</div>
+                </div>
+            </div>
+            
+            <!-- Aunts and Uncles Generation -->
+            <div class="generation aunts-uncles">
+                <div class="generation-label">Mes tantes et oncles</div>
+            </div>
+            
+            <div class="generation aunts-uncles">
+                <div class="mom-side">
+                    <div class="side-label">Le côté de mère</div>
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                        <div class="person-box">
+                            <div class="person-avatar" style="background-image: url('mom-uncle.webp');"></div>
+                            <input type="text" placeholder="Uncle Name">
+                            <div class="role">Mon oncle maternel</div>
+                        </div>
+                        <div class="person-box">
+                            <div class="person-avatar" style="background-image: url('mom-aunt-1.webp');"></div>
+                            <input type="text" placeholder="Aunt Name">
+                            <div class="role">Ma tante maternelle aînée</div>
+                        </div>
+                        <div class="person-box">
+                            <div class="person-avatar" style="background-image: url('mom-aunt-2.png');"></div>
+                            <input type="text" placeholder="Aunt Name">
+                            <div class="role">Ma tante maternelle cadetter</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dad-side">
+                    <div class="side-label">Le côté de père</div>
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                        <div class="person-box">
+                            <div class="person-avatar" style="background-image: url('dad-uncle.webp');"></div>
+                            <input type="text" placeholder="Uncle Name">
+                            <div class="role">Mon oncle paternel</div>
+                        </div>
+                        <div class="person-box">
+                            <div class="person-avatar" style="background-image: url('dad-aunt.png');"></div>
+                            <input type="text" placeholder="Aunt Name">
+                            <div class="role">Ma tante paternelle </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Children Generation -->
+            <div class="generation children">
+                <div class="generation-label">Enfants</div>
+            </div>
+            
+            <div class="generation children">
+                <div class="person-box">
+                    <div class="person-avatar" style="background-image: url('brother.png');"></div>
+                    <input type="text" placeholder="Brother's Name">
+                    <div class="role">Mon frère</div>
+                </div>
+                <div class="person-box">
+                    <div class="person-avatar" style="background-image: url('you.webp');"></div>
+                    <input type="text" placeholder="Your Name">
+                    <div class="role">Moi</div>
+                </div>
+                <div class="person-box pet">
+                    <div class="person-avatar" style="background-image: url('dog.png');"></div>
+                    <input type="text" placeholder="Dog's Name">
+                    <div class="role">🐕 Notre chien</div>
+                </div>
+            </div>
+        </div>
+        
+       
+    </div>
+    
+    <script>
+        // Auto-save functionality using JavaScript variables only
+        const familyData = {};
+        const inputs = document.querySelectorAll('input');
+        
+        inputs.forEach((input, index) => {
+            // Save data on input
+            input.addEventListener('input', () => {
+                familyData[`member_${index}`] = input.value;
+            });
+        });
+        
+        // Add some interactive effects
+        document.querySelectorAll('.person-box').forEach(box => {
+            box.addEventListener('mouseenter', () => {
+                box.style.transform = 'translateY(-5px) scale(1.02)';
+            });
+            
+            box.addEventListener('mouseleave', () => {
+                box.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>
